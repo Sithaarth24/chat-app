@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    Welcome <%=user.username %> <br>
+    <form action="/chat" method="post"></form>
+     <label for="reciever">Enter reciever: </label>
+     <input type="text" id="reciever"><br><br>
+     <label for="data">Chat:</label>
+     <input type="text" id="data">
+     <button id="send">Send</button>
+     <div id="messages"></div>
+     <script>
+        const messageContainer = document.getElementById('messages')
+        const send = document.getElementById('send')
+        const reciever = document.getElementById('reciever')
+        const data = document.getElementById('data')
+
+        send.addEventListener('click',(req,res)=>{
+            fetch('/chat/send_messages',{
+                method:'POST',
+                headers:{
+                    'content-type':'application/json'
+                },
+                body:JSON.stringify({reciever:reciever.value , data:data.value})
+            })
+        }).then((resolve)=>{console.log(resolve)})
+        .catch((err)=>{console.log(err)})
+
+        function checkForMessage()
+        {
+            fetch('/chat/get_messages')
+                .then((response)=>{
+                    const newMsgContainer = document.createElement('li')
+                    newMsgContainer.innerText = response.data
+                    messageContainer.appendChild(newMsgContainer)
+                })
+        }
+     </script>
+</body>
+</html>
