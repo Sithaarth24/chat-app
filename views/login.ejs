@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body{
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+    </style>
+</head>
+<body>
+        <label for="user">Enter username:</label>
+        <input type="text" name="user" id="uname"><br><br>
+        <label for="password">Enter password:</label>
+        <input type="text" name="password" id="upwd"><br><br>
+        <button id="submit">login</button>
+        <div id="sentStatus"></div>
+        don't have an account, click <a href="/signup">here</a>
+    </form>
+    <script>
+
+        const user = document.getElementById('uname')
+        const password = document.getElementById('upwd')
+        const submit = document.getElementById('submit')
+        const sentStatus = document.getElementById('sentStatus')
+
+        submit.addEventListener('click',()=>{
+            // console.log("HEllo")
+            const obj = {user:user.value , password:password.value}
+            console.log(obj)
+            fetch('/login_validation',{
+                method:'POST',
+                headers:{
+                    'content-type':'application/json'
+                },
+                body:JSON.stringify(obj)
+            }).then(response=>response.json())
+            .then(data=>{
+                if(data.redirect)
+                    window.location.href = data.URL
+                else
+                    sentStatus.innerText = data.mess
+            })
+            .catch((err)=>{
+                console.log(err)})
+        })
+        
+    </script>
+</body>
+</html>

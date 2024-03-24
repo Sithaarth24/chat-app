@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+     <label for="reciever">Enter reciever: </label>
+     <input type="text" id="reciever">
+     <button id="addUser">add</button><br><br>
+     <label for="data">Chat:</label>
+     <input type="text" id="data">
+     <button id="send">Send</button>
+     <div id="sentStatus" style="display: inline;margin-left: 12px;"></div>
+     <div id="messages"></div>
+     <script>
+        const messageContainer = document.getElementById('messages')
+        const send = document.getElementById('send')
+        const reciever = document.getElementById('reciever')
+        const data = document.getElementById('data')
+        const sentStatus = document.getElementById('sentStatus')
+        const urlParams = new URLSearchParams(window.location.search)
+        const sender = urlParams.get('user')
+        const addUser = document.getElementById('addUser')
+        const knownUsers = {}
+
+        addUser.addEventListener('click',()=>{
+            const new_user = addUser.value
+            if(new_user in knownUsers.keys())
+                return
+            knownUsers[new_user] = []
+        })
+
+        send.addEventListener('click',sendMessage)
+
+        // window.onload = async ()=>{
+        //     console.log("Hello")
+        //     await fetch('/chat/retrieve_past_message',{
+        //         method:'POST',
+        //         headers:{
+        //             'content-type':'application/json'
+        //         },
+        //         body:JSON.stringify({ sender:sender })
+        //     })
+        //         .then(response=>response.json())
+        //         .then(data=>{
+        //             if(data.available)
+        //                 messageContainer.innerText = data.mess
+        //         })
+        // }
+
+        async function sendMessage()
+        {
+            if(data.value==='' || reciever.value==='')
+                return 
+
+            const obj = {sender:sender, reciever:reciever.value , data:data.value}
+            data.value = ''
+            await fetch('/chat/send_message',{
+                method:'POST',
+                headers:{
+                    'content-type':'application/json'
+                },
+                body:JSON.stringify(obj)
+            }).then(response=>response.json())
+            .then(data=>{
+                sentStatus.innerText = data.mess
+                if(data.sent)
+                {
+                    const newMsgContainer = document.createElement('div')
+                    messageContainer.appendChild(newMsgContainer)
+                    newMsgContainer.innerHTML = "<b>You:</b>"+obj.data
+                }
+            })
+            .catch((err)=>{
+                sentStatus.innerText = "Server error"
+                console.log(err)})
+        }
+
+        async function checkForMessage()
+        {
+            await fetch('/chat/get_message',{
+                method:'POST',
+                headers:{
+                    'content-type':'application/json'
+                },
+                body:JSON.stringify({ sender:sender })
+            })
+                .then(response=>response.json())
+                .then(data=>{
+                    if(data.pending)
+                    {
+                        const newMsgContainer = document.createElement('div')
+                        newMsgContainer.innerHTML = "<b>"+Object.keys(data.mess)[0]+":</b>"+Object.values(data.mess)[0]
+                        messageContainer.appendChild(newMsgContainer)
+                    }
+                    // console.log("Hello")
+                })
+        }
+
+        setInterval(checkForMessage,300)
+     </script>
+</body>
+</html>

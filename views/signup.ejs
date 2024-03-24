@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+        <label for="user">Enter username:</label>
+        <input type="text" name="user" id="uname"><br><br>
+        <label for="password">Enter password:</label>
+        <input type="text" name="password" id="upwd"><br><br>
+        <button id="submit">Create account</button>
+        <div id="messDisplay"></div>
+    <script>
+        const user = document.getElementById('uname')
+        const password = document.getElementById('upwd')
+        const submit = document.getElementById('submit')
+        const messDisplay = document.getElementById('messDisplay')
+
+        submit.addEventListener('click',sendUserInfo)
+
+
+        async function sendUserInfo()
+        {
+            const obj = {user:user.value , password:password.value}
+            console.log(obj)
+            await fetch('/signup_validation',{
+                method:'POST',
+                headers:{
+                    'content-type':'application/json'
+                },
+                body:JSON.stringify(obj)
+            }).then(response=>response.json())
+            .then(data=>{
+                if(data.redirect)
+                    window.location.href = data.URL + "?user=" + user.value
+                else
+                    messDisplay.innerText = data.mess  
+            })
+            .catch((err)=>{
+                console.log(err)})
+        }
+    </script>
+</body>
+</html>
