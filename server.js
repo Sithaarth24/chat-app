@@ -10,8 +10,6 @@ db = mongoose.connection
 
 db.on('error',(e)=>{console.log(e)})
 db.once('open',()=>{console.log('Connection successfull')})
-db.listCollections()
-    .then(data=>console.log(data))
 
 let users = []
 let new_messages = []
