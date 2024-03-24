@@ -10,6 +10,7 @@ db = mongoose.connection
 
 db.on('error',(e)=>{console.log(e)})
 db.once('open',()=>{console.log('Connection successfull')})
+console.log("Just checking git push")
 
 let users = []
 let new_messages = []
