@@ -7,8 +7,8 @@
 </head>
 <body>
      <label for="reciever">Enter reciever: </label>
-     <input type="text" id="reciever">
-     <button id="addUser">add</button><br><br>
+     <input type="text" id="reciever"><br><br>
+     <!-- <button id="addUser">add</button><br><br> -->
      <label for="data">Chat:</label>
      <input type="text" id="data">
      <button id="send">Send</button>
@@ -22,7 +22,7 @@
         const sentStatus = document.getElementById('sentStatus')
         const urlParams = new URLSearchParams(window.location.search)
         const sender = urlParams.get('user')
-        const addUser = document.getElementById('addUser')
+        // const addUser = document.getElementById('addUser')
         const knownUsers = {}
 
         addUser.addEventListener('click',()=>{

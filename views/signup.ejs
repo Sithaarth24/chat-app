@@ -25,7 +25,7 @@
         {
             const obj = {user:user.value , password:password.value}
             console.log(obj)
-            await fetch('/signup_validation',{
+            await fetch('/signup/signup_validation',{
                 method:'POST',
                 headers:{
                     'content-type':'application/json'
